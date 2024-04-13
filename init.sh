@@ -57,7 +57,7 @@ function INIT_config(){
     cp -r $HOME/.vim $HOME/.ssh $HOME/.config /home/$USERNAME > /dev/null 2>&1
     chown -R $USERNAME /home/$USERNAME/.vim /home/$USERNAME/.ssh /home/$USERNAME/.config > /dev/null 2>&1
     chmod 700 /home/$USERNAME/.ssh/authorized_keys > /dev/null 2>&1
-    echo "# INCLUDES" > /root/.bashrc
+    echo "# INCLUDES" > /$USERNAME/.bashrc
     echo "" >> /home/$USERNAME/.bashrc
     echo "source /home/$USERNAME/.config/ecl.sh/ecl.sh" >> /root/.bashrc
     echo "" >> /home/$USERNAME/.bashrc
@@ -101,7 +101,8 @@ function INIT_config(){
     TIMEOUT=15 > /dev/null 
     sed -i "s/<CPUs>/$CPUs/g" /etc/nginx/nginx.conf > /dev/null 
     sed -i "s/<WORKERS>/$WORKERS/g" /etc/nginx/nginx.conf > /dev/null 
-    sed -i "s/<TIMEOUT>/$TIMEOU/g" /etc/nginx/nginx.conf > /dev/null 
+    sed -i "s/<TIMEOUT>/$TIMEOUT/g" /etc/nginx/nginx.conf > /dev/null
+    sed -i "s/<USERNAME>/$USERNAME/g" /etc/nginx/nginx.conf > /dev/null
 ## add fastcgi
     echo "fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;" >> /etc/nginx/fastcgi_params > /dev/null
 ## restart nginx
@@ -123,10 +124,8 @@ function INIT_config(){
     groupadd docker > /dev/null 2>&1
     usermod -aG docker $USERNAME > /dev/null 2>&1
     newgrp docker
-    if [[ -d /home/"$USERNAME"/.docker ]]; then
-        chown "$USERNAME":"$USERNAME" /home/"$USERNAME"/.docker -R > /dev/null 2>&1
-        chmod g+rwx "$HOME/$USERNAME/.docker" -R > /dev/null 2>&1
-    fi
+    chown "$USERNAME":"$USERNAME" /home/"$USERNAME"/.docker -R > /dev/null 2>&1
+    chmod g+rwx "$HOME/$USERNAME/.docker" -R > /dev/null 2>&1
 ## force docker daemon to run after reboot
     echo "=> Enabling docker..."
     sudo systemctl enable docker.service > /dev/null 2>&1
