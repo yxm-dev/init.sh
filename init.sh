@@ -6,9 +6,9 @@ function INIT_config(){
 
 # BASIC PACKAGES
     echo "Upgrading the system..."
-    apt-get update /dev/null 2>&1
-    apt-get upgrade /dev/null 2>&1
-    apt-get dist-upgrade /dev/null 2>&1
+    apt-get update > /dev/null 2>&1
+    apt-get upgrade > /dev/null 2>&1
+    apt-get dist-upgrade > /dev/null 2>&1
     echo "Installing basic packages..."
     apt-get -y install make > /dev/null 2>&1
     apt-get -y install gcc > /dev/null 2>&1
@@ -20,15 +20,15 @@ function INIT_config(){
 # VIM
     echo "Configuring vim..."
     git clone https://codeberg.org/yxm/vim-basic > /dev/null 
-    mv vim-basic $HOME/.vim > /dev/null 
+    mv vim-basic /root/.vim > /dev/null 
 
 # ECL.SH
     echo "Installing ecl.sh..."
-    echo "" > $HOME/.bashrc > /dev/null
-    mkdir $HOME/.config > /dev/null
-    cd $HOME/.config > /dev/null
+    echo "" > /root/.bashrc > /dev/null
+    mkdir /root/.config > /dev/null
+    cd /root/.config > /dev/null
     git clone https://github.com/yxm-dev/ecl.sh > /dev/null 
-    echo "# INCLUDES" >> $HOME/.bashrc > /dev/null
+    echo "# INCLUDES" >> /root/.bashrc > /dev/null
     echo "" >> $HOME/.bashrc > /dev/null
     echo "source $HOME/.config/ecl.sh/ecl.sh" >> $HOME/.bashrc > /dev/null
     echo "" >> $HOME/.bashrc > /dev/null
@@ -71,8 +71,8 @@ function INIT_config(){
 ## install nginx
     echo "Installing Nginx..."
     add-apt-repository ppa:ondrej/nginx -y > /dev/null 
-    apt update -y > /dev/null 
-    apt dist-upgrade -y > /dev/null 
+    apt update > /dev/null 
+    apt dist-upgrade  > /dev/null 
     apt install nginx -y > /dev/null 
 ## basic nginx config
     echo "Configuring Nginx..."
@@ -105,7 +105,7 @@ function INIT_config(){
         $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt-get update > /dev/null
-    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y > /dev/null
+    sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
 ## allow $USERNAME use docker without sudo
     echo "Allowing $USERNAME to use docker without sudo..."
     groupadd docker > /dev/null
