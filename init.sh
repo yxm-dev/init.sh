@@ -5,13 +5,17 @@ function INIT_config(){
     PASSWORD=$2
 
 # BASIC PACKAGES
+    echo "Upgrading the system..."
+    apt-get update /dev/null 2>&1
+    apt-get upgrade /dev/null 2>&1
+    apt-get dist-upgrade /dev/null 2>&1
     echo "Installing basic packages..."
-    apt install make -y > /dev/null
-    apt install gcc -y > /dev/null
-    apt install libcurses-dev -y > /dev/null
-    apt install unattented-upgrades -y > /dev/null
-    apt install ufw -y > /dev/null
-    apt install fail2ban -y > /dev/null 
+    apt-get -y install make > /dev/null 2>&1
+    apt-get -y install gcc > /dev/null 2>&1
+    apt-get -y install libncurses-dev  > /dev/null 2>&1
+    apt-get -y install unattended-upgrades > /dev/null 2>&1
+    apt-get -y install ufw > /dev/null 2>&1
+    apt-get -y install fail2ban > /dev/null 2>&1
 
 # VIM
     echo "Configuring vim..."
@@ -28,7 +32,7 @@ function INIT_config(){
     echo "" >> $HOME/.bashrc > /dev/null
     echo "source $HOME/.config/ecl.sh/ecl.sh" >> $HOME/.bashrc > /dev/null
     echo "" >> $HOME/.bashrc > /dev/null
-    rm -r /user/share/bash-completion > /dev/null
+    rm -r /usr/share/bash-completion > /dev/null
 
 # BASIC CONFIG
 ## timezone
@@ -47,16 +51,16 @@ function INIT_config(){
 # SECURITY
 ## set auto updates
     echo "Allowing automatic security updates..."
-    dpkg-reconfigure unattended-upgrades > /dev/null
+    dpkg-reconfigure unattended-upgrades
 ## set reboot after updates
     echo "Setting reboot after updates..."
     Unattended-Upgrade::Automatic-Reboot-Time "04:00"; > /dev/null
 ## firewall
-    echo "Enabling firewal..."
-    ufw allow ssh > /dev/null 
-    ufw allow http > /dev/null 
-    ufw allow https > /dev/null 
-    ufw enable > /dev/null 
+    echo "Enabling firewall..."
+    ufw allow ssh
+    ufw allow http
+    ufw allow https
+    ufw enable
 ## block SSH access after multiple attempts
     echo "Configuting SSH to block IPs after multiple attempts..."
     service fail2ban start > /dev/null
