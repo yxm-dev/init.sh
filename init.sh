@@ -5,6 +5,7 @@ function INIT_config(){
     PASSWORD=$2
 
 # BASIC PACKAGES
+    echo "Installing basic packages..."
     apt install \
 ## for dev
         make \
@@ -13,17 +14,19 @@ function INIT_config(){
 ## security
         unattended-upgrades \
         ufw \
-        fail2ban -y
+        fail2ban -y > /dev/null 
 
 # VIM
-    git clone https://codeberg.org/yxm/vim-basic
-    mv vim $HOME/.vim
+    echo "Configuring vim..."
+    git clone https://codeberg.org/yxm/vim-basic > /dev/null 
+    mv vim $HOME/.vim > /dev/null 
 
 # ECL.SH
+    echo "Installing ecl.sh..."
     echo "" > $HOME/.bashrc
     mkdir $HOME/.config
     cd $HOME/.config
-    git clone https://github.com/yxm-dev/ecl.sh
+    git clone https://github.com/yxm-dev/ecl.sh > /dev/null 
     echo "# INCLUDES" >> $HOME/.bashrc
     echo "" >> $HOME/.bashrc
     echo "source $HOME/.config/ecl.sh/ecl.sh" >> $HOME/.bashrc
@@ -32,76 +35,89 @@ function INIT_config(){
 
 # BASIC CONFIG
 ## timezone
+    echo "Configuring timezone..."
     timedatectl set-timezone America/Sao_Paulo
 ## new sudo user
-    useradd -m -s /bin/bash $USERNAME && echo "$USERNAME:$PASSWORD" | sudo chpasswd
-    usermod -a -G sudo $USERNAME
+    echo "Creating and configuring sudo user $USERNAME..."
+    useradd -m -s /bin/bash $USERNAME && echo "$USERNAME:$PASSWORD" | sudo chpasswd > /dev/null 
+    usermod -a -G sudo $USERNAME > /dev/null 
 ## config new sudo user
     cp -r $HOME/.bashrc $HOME/.vim $HOME/.ssh $HOME/.config /home/$USERNAME
+    sed -i "s/\/root\//\/home\/$USERNAME\//" $HOME/.bashrc
     chown -R $USERNAME /home/$USERNAME/.bashrc /home/$USERNAME/.vim /home/$USERNAME/.ssh /home/$USERNAME/.config
     chmod 700 /home/$USERNAME/.ssh/authorized_keys
 
 # SECURITY
 ## set auto updates
-    echo "unattended-upgrades unattended-upgrades/enable_auto_updates boolean true" | sudo debconf-set-selections && sudo dpkg-reconfigure -f noninteractive unattended-upgrades
+    echo "Allowing automatic security updates..."
+    dpkg-reconfigure unattended-upgrades
 ## set reboot after updates
+    echo "Setting reboot after updates..."
     Unattended-Upgrade::Automatic-Reboot-Time "04:00";
 ## firewall
-    ufw allow ssh
-    ufw allow http
-    ufw allow https
-    ufw enable
+    echo "Enabling firewal..."
+    ufw allow ssh > /dev/null 
+    ufw allow http > /dev/null 
+    ufw allow https > /dev/null 
+    ufw enable > /dev/null 
 ## block SSH access after multiple attempts
+    echo "Configuting SSH to block IPs after multiple attempts..."
     service fail2ban start
 ## block login as root
     # ........
 
 # SERVER
 ## install nginx
-    add-apt-repository ppa:ondrej/nginx -y
-    apt update
-    apt dist-upgrade -y
-    apt install nginx -y
+    echo "Installing Nginx..."
+    add-apt-repository ppa:ondrej/nginx -y > /dev/null 
+    apt update -y > /dev/null 
+    apt dist-upgrade -y > /dev/null 
+    apt install nginx -y > /dev/null 
 ## basic nginx config
-    cp nginx.conf /etc/nginx/nginx.conf
-    declare -i CPU
-    declare -i ULIMIT
-    CPUs=$(grep processor /proc/cpuinfo | wc -l)
-    ULIMIT=$(ulimit -n)
-    WORKERS=$(( CPUs * ULIMIT ))
-    TIMEOUT=15
-    sed -i "s/<CPUs>/$CPUs/g" /etc/nginx/nginx.conf
-    sed -i "s/<WORKERS>/$WORKERS/g" /etc/nginx/nginx.conf
-    sed -i "s/<TIMEOUT>/$TIMEOU/g" /etc/nginx/nginx.conf
+    echo "Configuring Nginx..."
+    cp nginx.conf /etc/nginx/nginx.conf > /dev/null 
+    declare -i CPU > /dev/null 
+    declare -i ULIMIT > /dev/null 
+    CPUs=$(grep processor /proc/cpuinfo | wc -l) > /dev/null 
+    ULIMIT=$(ulimit -n) > /dev/null 
+    WORKERS=$(( CPUs * ULIMIT )) > /dev/null 
+    TIMEOUT=15 > /dev/null 
+    sed -i "s/<CPUs>/$CPUs/g" /etc/nginx/nginx.conf > /dev/null 
+    sed -i "s/<WORKERS>/$WORKERS/g" /etc/nginx/nginx.conf > /dev/null 
+    sed -i "s/<TIMEOUT>/$TIMEOU/g" /etc/nginx/nginx.conf > /dev/null 
 ## add fastcgi
-    echo "fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;" >> /etc/nginx/fastcgi_params
+    echo "fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;" >> /etc/nginx/fastcgi_params > /dev/null
 ## restart nginx
-    sudo service nginx restart
+    echo "Starting nginx service..."
+    sudo service nginx restart > /dev/null
 
 # DOCKER
 ## install docker
-    apt-get update
-    apt-get install ca-certificates curl
-    install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-    chmod a+r /etc/apt/keyrings/docker.asc
+    echo "Installing docker..."
+    apt-get update > /dev/null
+    apt-get install ca-certificates curl -y > /dev/null
+    install -m 0755 -d /etc/apt/keyrings > /dev/null
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc > /dev/null
+    chmod a+r /etc/apt/keyrings/docker.asc > /dev/null
     echo \
         "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
         $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt-get update
-    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    sudo apt-get update > /dev/null
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y > /dev/null
 ## allow $USERNAME use docker without sudo
-    groupadd docker
-    usermod -aG docker $USERNAME
-    newgrp docker
+    echo "Allowing $USERNAME to use docker without sudo..."
+    groupadd docker > /dev/null
+    usermod -aG docker $USERNAME > /dev/null
+    newgrp docker > /dev/null
     if [[ -d /home/"$USERNAME"/.docker ]]; then
-        chown "$USERNAME":"$USERNAME" /home/"$USERNAME"/.docker -R
-        chmod g+rwx "$HOME/$USERNAME/.docker" -R
+        chown "$USERNAME":"$USERNAME" /home/"$USERNAME"/.docker -R > /dev/null
+        chmod g+rwx "$HOME/$USERNAME/.docker" -R > /dev/null
     fi
 ## force docker daemon to run after reboot
-    sudo systemctl enable docker.service
-    sudo systemctl enable containerd.service
+    echo "Enabling docker..."
+    sudo systemctl enable docker.service > /dev/null
+    sudo systemctl enable containerd.service> /dev/null
 }
 
 # BEGIN OF INIT SCRIPT
