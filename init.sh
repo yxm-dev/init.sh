@@ -19,16 +19,12 @@ function INIT_config(){
     apt-get -y install fail2ban > /dev/null 2>&1
 
 # VIM
-#   echo "=> Installing Vim 9.0..."
-#   apt-get -y remove vim > /dev/null 2>&1
-#   apt-get -y autoremove > /dev/null 2>&1
-#   git clone https://github.com/vim/vim.git > /dev/null 2>&1
-#   cd vim/src
-#   ./configure > /dev/null 2>&1
-#   make > /dev/null 2>&1
-#   make install /dev/null 2>&1
-#   cd ../../
-#   rm -r vim
+    echo "=> Installing Vim 9.0..."
+    apt-get -y remove vim > /dev/null 2>&1
+    apt-get -y autoremove > /dev/null 2>&1
+    add-apt-repository ppa:jonathonf/vim -y > /dev/null 2>&1
+    apt-get -y update > /dev/null 2>&1
+    apt-get -y install vim > /dev/null 2>&1 
     echo "=> Configuring Vim..."
     git clone https://codeberg.org/yxm/vim-basic > /dev/null 2>&1
     mv vim-basic /root/.vim > /dev/null 2>&1 
