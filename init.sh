@@ -59,9 +59,11 @@ function INIT_config(){
     timedatectl set-timezone America/Sao_Paulo
 ## new sudo user
     useradd -m -s /bin/bash $USERNAME && echo "$USERNAME:$PASSWORD" | sudo chpasswd
-    usermod -a -G sudo yxm
+    usermod -a -G sudo $USERNAME
 ## config new sudo user
     cp -r $HOME/.bashrc $HOME/.vim $HOME/.ssh $HOME/.config /home/$USERNAME
+    chown -R $USERNAME /home/$USERNAME/.bashrc /home/$USERNAME/.vim /home/$USERNAME/.ssh /home/$USERNAME/.config
+    chmod 700 /home/$USERNAME/.ssh/authorized_keys
 
 # SECURITY
 ## set auto updates 
