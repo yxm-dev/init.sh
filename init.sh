@@ -6,54 +6,51 @@ function INIT_config(){
 
 # BASIC PACKAGES
     echo "Installing basic packages..."
-    apt install \
-## for dev
-        make \
-        gcc \
-        libncurses-dev \
-## security
-        unattended-upgrades \
-        ufw \
-        fail2ban -y > /dev/null 
+    apt install make -y > /dev/null
+    apt install gcc -y > /dev/null
+    apt install libcurses-dev -y > /dev/null
+    apt install unattented-upgrades -y > /dev/null
+    apt install ufw -y > /dev/null
+    apt install fail2ban -y > /dev/null 
 
 # VIM
     echo "Configuring vim..."
     git clone https://codeberg.org/yxm/vim-basic > /dev/null 
-    mv vim $HOME/.vim > /dev/null 
+    mv vim-basic $HOME/.vim > /dev/null 
 
 # ECL.SH
     echo "Installing ecl.sh..."
-    echo "" > $HOME/.bashrc
-    mkdir $HOME/.config
-    cd $HOME/.config
+    echo "" > $HOME/.bashrc > /dev/null
+    mkdir $HOME/.config > /dev/null
+    cd $HOME/.config > /dev/null
     git clone https://github.com/yxm-dev/ecl.sh > /dev/null 
-    echo "# INCLUDES" >> $HOME/.bashrc
-    echo "" >> $HOME/.bashrc
-    echo "source $HOME/.config/ecl.sh/ecl.sh" >> $HOME/.bashrc
-    echo "" >> $HOME/.bashrc
-    rm -r /user/share/bash-completion
+    echo "# INCLUDES" >> $HOME/.bashrc > /dev/null
+    echo "" >> $HOME/.bashrc > /dev/null
+    echo "source $HOME/.config/ecl.sh/ecl.sh" >> $HOME/.bashrc > /dev/null
+    echo "" >> $HOME/.bashrc > /dev/null
+    rm -r /user/share/bash-completion > /dev/null
 
 # BASIC CONFIG
 ## timezone
     echo "Configuring timezone..."
-    timedatectl set-timezone America/Sao_Paulo
+    timedatectl set-timezone America/Sao_Paulo > /dev/null
 ## new sudo user
     echo "Creating and configuring sudo user $USERNAME..."
     useradd -m -s /bin/bash $USERNAME && echo "$USERNAME:$PASSWORD" | sudo chpasswd > /dev/null 
     usermod -a -G sudo $USERNAME > /dev/null 
 ## config new sudo user
-    cp -r $HOME/.bashrc $HOME/.vim $HOME/.ssh $HOME/.config /home/$USERNAME
-    sed -i "s/\/root\//\/home\/$USERNAME\//" $HOME/.bashrc
-    chown -R $USERNAME /home/$USERNAME/.bashrc /home/$USERNAME/.vim /home/$USERNAME/.ssh /home/$USERNAME/.config
-    chmod 700 /home/$USERNAME/.ssh/authorized_keys
+    cp -r $HOME/.bashrc $HOME/.vim $HOME/.ssh $HOME/.config /home/$USERNAME > /dev/null
+    sed -i "s/\/root\//\/home\/$USERNAME\//" $HOME/.bashrc > /dev/null
+    chown -R $USERNAME /home/$USERNAME/.bashrc /home/$USERNAME/.vim /home/$USERNAME/.ssh /home/$USERNAME/.config > /dev/null
+    chmod 700 /home/$USERNAME/.ssh/authorized_keys > /dev/null
 
 # SECURITY
 ## set auto updates
     echo "Allowing automatic security updates..."
-    dpkg-reconfigure unattended-upgrades
+    dpkg-reconfigure unattended-upgrades > /dev/null
 ## set reboot after updates
     echo "Setting reboot after updates..."
-    Unattended-Upgrade::Automatic-Reboot-Time "04:00";
+    Unattended-Upgrade::Automatic-Reboot-Time "04:00"; > /dev/null
 ## firewall
     echo "Enabling firewal..."
     ufw allow ssh > /dev/null 
@@ -62,7 +59,7 @@ function INIT_config(){
     ufw enable > /dev/null 
 ## block SSH access after multiple attempts
     echo "Configuting SSH to block IPs after multiple attempts..."
-    service fail2ban start
+    service fail2ban start > /dev/null
 ## block login as root
     # ........
 
