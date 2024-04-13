@@ -54,12 +54,12 @@ function INIT_config(){
     useradd -m -s /bin/bash $USERNAME && echo "$USERNAME:$PASSWORD" | sudo chpasswd > /dev/null 2>&1
     usermod -a -G sudo $USERNAME > /dev/null 2>&1 
 ## config new sudo user
-    cp -r $HOME/.vim $HOME/.ssh $HOME/.config /home/$USERNAME > /dev/null 2>&1
+    cp -r /root/.vim /root/.ssh /root/.config /home/$USERNAME > /dev/null 2>&1
     chown -R $USERNAME /home/$USERNAME/.vim /home/$USERNAME/.ssh /home/$USERNAME/.config > /dev/null 2>&1
     chmod 700 /home/$USERNAME/.ssh/authorized_keys > /dev/null 2>&1
-    echo "# INCLUDES" > /$USERNAME/.bashrc
+    echo "# INCLUDES" > /home/$USERNAME/.bashrc
     echo "" >> /home/$USERNAME/.bashrc
-    echo "source /home/$USERNAME/.config/ecl.sh/ecl.sh" >> /root/.bashrc
+    echo "source /home/$USERNAME/.config/ecl.sh/ecl.sh" >> /home/$USERNAME/.bashrc
     echo "" >> /home/$USERNAME/.bashrc
 
 # SECURITY
@@ -125,7 +125,7 @@ function INIT_config(){
     usermod -aG docker $USERNAME > /dev/null 2>&1
     newgrp docker
     chown "$USERNAME":"$USERNAME" /home/"$USERNAME"/.docker -R > /dev/null 2>&1
-    chmod g+rwx "$HOME/$USERNAME/.docker" -R > /dev/null 2>&1
+    chmod g+rwx "/home/$USERNAME/.docker" -R > /dev/null 2>&1
 ## force docker daemon to run after reboot
     echo "=> Enabling docker..."
     sudo systemctl enable docker.service > /dev/null 2>&1
