@@ -1,33 +1,9 @@
 #! /bin/bash
 
-echo "Enter the username of the new sudo user:"
-while : 
-do
-    read -e -r -p "> " USERNAME
-    if [[ -n "$USERNAME" ]]; then
-        echo "Enter the password for the new sudo user:"
-        while :
-        do
-            read -e -r -p "> " PASSWORD
-            if [[ -n "$USERNAME" ]]; then
-                INIT_config $USERNAME $PASSWORD
-                break
-            else
-                echo "Please, enter a password:"
-                continue
-            fi
-        done
-        break
-    else
-        echo "Please, enter a username:"
-        continue
-    fi
-done
-
 function INIT_config(){
     USERNAME=$1
     PASSWORD=$2
-    
+
 # BASIC PACKAGES
     apt install \
 ## for dev
@@ -66,7 +42,7 @@ function INIT_config(){
     chmod 700 /home/$USERNAME/.ssh/authorized_keys
 
 # SECURITY
-## set auto updates 
+## set auto updates
     echo "unattended-upgrades unattended-upgrades/enable_auto_updates boolean true" | sudo debconf-set-selections && sudo dpkg-reconfigure -f noninteractive unattended-upgrades
 ## set reboot after updates
     Unattended-Upgrade::Automatic-Reboot-Time "04:00";
@@ -101,7 +77,7 @@ function INIT_config(){
     echo "fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;" >> /etc/nginx/fastcgi_params
 ## restart nginx
     sudo service nginx restart
-    
+
 # DOCKER
 ## install docker
     apt-get update
@@ -127,3 +103,30 @@ function INIT_config(){
     sudo systemctl enable docker.service
     sudo systemctl enable containerd.service
 }
+
+# BEGIN OF INIT SCRIPT
+
+echo "Enter the username of the new sudo user:"
+while : 
+do
+    read -e -r -p "> " USERNAME
+    if [[ -n "$USERNAME" ]]; then
+        echo "Enter the password for the new sudo user:"
+        while :
+        do
+            read -e -r -p "> " PASSWORD
+            if [[ -n "$USERNAME" ]]; then
+                INIT_config $USERNAME $PASSWORD
+                break
+            else
+                echo "Please, enter a password:"
+                continue
+            fi
+        done
+        break
+    else
+        echo "Please, enter a username:"
+        continue
+    fi
+done
+
